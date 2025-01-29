@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>👶 Reveal Riddle Game 👶</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      background-color: #f5f5dc; /* Beige */
+      color: #6b4f4f; /* Soft Brown */
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      padding: 20px;
+    }
+    .riddle-box {
+      margin: 20px auto;
+      padding: 20px;
+      border: 2px solid #d2a679; /* Light Taupe */
+      width: 80%;
+      max-width: 500px;
+      background-color: #fff8f0; /* Light Beige */
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #d2a679; /* Light Taupe */
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #e0b8a4; /* Blush */
+    }
+    .confetti {
+      font-size: 48px;
+      margin: 20px 0;
+    }
+    #surprise-text {
+      font-size: 36px;
+      color: #ff69b4; /* Pink for girl, or use #87ceeb for blue */
+      display: none;
+      margin-top: 20px;
+    }
+    .balloon {
+      position: absolute;
+      width: 50px;
+      height: 70px;
+      background-color: #ff69b4; /* Pink for girl, or use #87ceeb for blue */
+      border-radius: 50%;
+      animation: float 5s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+    .answer {
+      font-size: 14px;
+      color: #6b4f4f; /* Soft Brown */
+      margin-top: 10px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="homepage">
+    <h1>👶 Reveal Riddle Game 👶</h1>
+    <p>Can you solve the riddles and uncover the big surprise?</p>
+    <button onclick="startGame()">Start the Game</button>
+  </div>
+
+  <div class="container" id="riddle-page" style="display: none;">
+    <div class="riddle-box">
+      <p id="riddle-text"></p>
+      <p id="answer-text" class="answer"></p>
+      <button id="next-riddle" onclick="nextRiddle()">Next Riddle</button>
+      <button id="show-answer" onclick="showAnswer()">Show Answer</button>
+    </div>
+  </div>
+
+  <div class="container" id="reveal-page" style="display: none;">
+    <div class="confetti">🎉</div>
+    <p>You’ve solved the clues, so here’s your last test!</p>
+    <p>Find the surprise where baby will rest!</p>
+    <button onclick="revealSurprise()">Click to Reveal the Surprise!</button>
+    <p id="surprise-text"></p>
+  </div>
+
+  <audio id="click-sound" src="click.mp3"></audio>
+  <audio id="reveal-sound" src="reveal.mp3"></audio>
+
+  <script>
+    const riddles = [
+      { question: "I’m changed often but never complain, I keep things clean, though I take the strain. What am I?", answer: "A diaper" },
+      { question: "I hold a meal but I’m not a plate, You tip me over, but I never break. What am I?", answer: "A baby bottle" },
+      { question: "I have a handle but I’m not a door, I keep someone safe while parents explore. What am I?", answer: "A baby carrier" },
+      { question: "I fill with air but I’m not a balloon, Without me, mealtime ends too soon. What am I?", answer: "A burp" },
+      { question: "I start small but can grow quite loud, When I begin, I gather a crowd. What am I?", answer: "A baby’s cry" },
+      { question: "I soothe tears, but I’m not a hug, I’m often lost under a rug. What am I?", answer: "A pacifier" },
+      { question: "I am tiny, but I can make quite a mess, Soft or firm, you’ll never guess! What am I?", answer: "Baby poo" }
+    ];
+    let currentRiddle = 0;
+
+    function startGame() {
+      document.getElementById('homepage').style.display = 'none';
+      document.getElementById('riddle-page').style.display = 'block';
+      document.getElementById('riddle-text').innerText = riddles[currentRiddle].question;
+      document.getElementById('answer-text').style.display = 'none';
+      playSound('click-sound');
+    }
+
+    function nextRiddle() {
+      currentRiddle++;
+      if (currentRiddle < riddles.length) {
+        document.getElementById('riddle-text').innerText = riddles[currentRiddle].question;
+        document.getElementById('answer-text').style.display = 'none';
+        playSound('click-sound');
+      } else {
+        document.getElementById('riddle-page').style.display = 'none';
+        document.getElementById('reveal-page').style.display = 'block';
+      }
+    }
+
+    function showAnswer() {
+      document.getElementById('answer-text').innerText = `Answer: ${riddles[currentRiddle].answer}`;
+      document.getElementById('answer-text').style.display = 'block';
+    }
+
+    function revealSurprise() {
+      playSound('reveal-sound');
+      document.getElementById('surprise-text').innerText = "It’s a Girl!"; // or "It’s a Boy!"
+      document.getElementById('surprise-text').style.display = 'block';
+      createBalloons();
+    }
+
+    function playSound(soundId) {
+      const sound = document.getElementById(soundId);
+      sound.currentTime = 0;
+      sound.play();
+    }
+
+    function createBalloons() {
+      const colors = ['#ff69b4', '#e0b8a4', '#d2a679']; // Pink, Blush, Taupe
+      for (let i = 0; i < 20; i++) {
+        const balloon = document.createElement('div');
+        balloon.className = 'balloon';
+        balloon.style.left = `${Math.random() * 100}vw`;
+        balloon.style.animationDuration = `${Math.random() * 3 + 2}s`;
+        balloon.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        document.body.appendChild(balloon);
+      }
+    }
+  </script>
+</body>
+</html>
