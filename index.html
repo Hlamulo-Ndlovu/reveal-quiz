@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-image: url('program.png'); /* Replace with your PNG image path */
+            background-image: url('background.png'); /* Replace with your PNG image path */
             background-size: cover;
             background-position: center;
             color: #5C3D28; /* Darker brown text */
@@ -20,7 +20,7 @@
             max-width: 600px;
             margin: 0 auto;
             padding: 20px;
-            background-color: rgba(250, 235, 215, 0.8); /* Soft nude color with transparency */
+            background-color: #FAEBD7; /* Lighter nude color */
             border-radius: 10px;
             box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
         }
@@ -40,6 +40,7 @@
             margin-top: 10px;
             color: #8B4513;
             font-weight: bold;
+            display: none; /* Hidden by default */
         }
 
         .button {
@@ -58,24 +59,68 @@
             background-color: #C56B40;
         }
 
+        .button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
         .reveal {
             display: none;
             margin-top: 30px;
-            font-size: 2em;
+            font-size: 1.5em;
             color: #D77F50;
+        }
+
+        .balloon {
+            position: absolute;
+            width: 50px;
+            height: 70px;
+            background-color: #ff69b4; /* Pink for girl, or use #87ceeb for blue */
+            border-radius: 50%;
+            animation: float 5s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .key-input {
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 1em;
+            border: 2px solid #D77F50;
+            border-radius: 5px;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .final-reveal {
+            font-size: 1.2em;
+            margin-top: 20px;
+            color: #5C3D28;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Gender Reveal Quiz</h1>
+        <h1>👶 Reveal Riddle Game 👶</h1>
         <div class="question" id="question"></div>
         <div class="answer" id="answer"></div>
-        <button class="button" id="nextButton">Next Question</button>
+        <input type="text" class="key-input" id="keyInput" placeholder="Enter the secret key">
+        <button class="button" id="submitKeyButton">Submit Key</button>
+        <div class="error-message" id="errorMessage">Incorrect key! Try again.</div>
+        <button class="button" id="nextButton" disabled>Next Question</button>
         <div class="reveal" id="reveal">It's a...</div>
+        <div class="final-reveal" id="finalReveal"></div>
     </div>
 
+    <audio id="clickSound" src="click.mp3" preload="auto"></audio>
     <audio id="revealSound" src="reveal_sound.mp3" preload="auto"></audio>
 
     <script>
@@ -86,48 +131,98 @@
             {question: "I fill with air but I’m not a balloon, Without me, mealtime ends too soon. What am I?", answer: "A burp"},
             {question: "I start small but can grow quite loud, When I begin, I gather a crowd. What am I?", answer: "A baby’s cry"},
             {question: "I soothe tears, but I’m not a hug, I’m often lost under a rug. What am I?", answer: "A pacifier"},
-            {question: "I am tiny, but I can make quite a mess, Soft or firm, you’ll never guess! What am I?", answer: "Baby poo"}
+            {question: "I am tiny, but I can make quite a mess, Soft or firm, you’ll never guess! What am I?", answer: "Baby poo"},
+            {question: "The Big Reveal!", answer: "I'm I a Boy or Girl?"} // Change to "It's a Girl!" for a girl reveal
         ];
 
         let currentQuestionIndex = 0;
 
         const questionElement = document.getElementById("question");
         const answerElement = document.getElementById("answer");
+        const keyInput = document.getElementById("keyInput");
+        const submitKeyButton = document.getElementById("submitKeyButton");
+        const errorMessage = document.getElementById("errorMessage");
         const nextButton = document.getElementById("nextButton");
         const revealElement = document.getElementById("reveal");
+        const finalRevealElement = document.getElementById("finalReveal");
+        const clickSound = document.getElementById("clickSound");
         const revealSound = document.getElementById("revealSound");
 
-        function showQuestion(index) {
-            if (index < questions.length) {
-                questionElement.textContent = questions[index].question;
+        // Function to generate the dynamic key
+        function generateKey(index) {
+            return `reveal${index * 2 + index * index}`; // Example equation: reveal + (index * 2 + index)
+        }
+
+        // Function to validate the key
+        function validateKey() {
+            const enteredKey = keyInput.value.trim();
+            const correctKey = generateKey(currentQuestionIndex);
+
+            if (enteredKey === correctKey) {
+                if (currentQuestionIndex === questions.length - 1) {
+                    // Special handling for the last question (The Big Reveal!)
+                    revealElement.style.display = 'block';
+                    revealElement.textContent = questions[currentQuestionIndex].answer;
+                    finalRevealElement.innerHTML = `
+                        <p>Find the surprise where baby will rest!</p>
+                        <p>Approximate dimensions:</p>
+                        <p>34cm(L) x 55cm(W) x 89cm(H)</p>
+                        <p>Colours:</p>
+                        <p>White with orange, green and blue dinosaurs</p>
+                    `;
+                    revealSound.play();
+                    createBalloons();
+                    nextButton.style.display = 'none';
+                    submitKeyButton.style.display = 'none';
+                    keyInput.style.display = 'none';
+                } else {
+                    answerElement.textContent = `Answer: ${questions[currentQuestionIndex].answer}`;
+                    answerElement.style.display = 'block';
+                    nextButton.disabled = false; // Enable the "Next Question" button
+                }
+                errorMessage.style.display = 'none';
+                clickSound.play();
+            } else {
+                errorMessage.style.display = 'block';
+            }
+        }
+
+        // Function to show the next question
+        function showNextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                questionElement.textContent = questions[currentQuestionIndex].question;
                 answerElement.textContent = '';
-                nextButton.textContent = "Show Answer";
+                answerElement.style.display = 'none';
+                keyInput.value = '';
+                errorMessage.style.display = 'none';
+                nextButton.disabled = true; // Disable the "Next Question" button
+                clickSound.play();
             } else {
-                revealElement.style.display = 'block';
-                revealSound.play();
+                // End of game
                 nextButton.style.display = 'none';
-                setTimeout(() => {
-                    revealElement.textContent = "It's a Boy!";
-                }, 3000); // Change to "It's a Girl!" for a girl reveal
             }
         }
 
-        function showAnswer() {
-            answerElement.textContent = questions[currentQuestionIndex].answer;
-            nextButton.textContent = "Next Question";
+        // Balloon animation
+        function createBalloons() {
+            const colors = ['#ff69b4', '#e0b8a4', '#d2a679']; // Pink, Blush, Taupe
+            for (let i = 0; i < 20; i++) {
+                const balloon = document.createElement('div');
+                balloon.className = 'balloon';
+                balloon.style.left = `${Math.random() * 100}vw`;
+                balloon.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                balloon.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                document.body.appendChild(balloon);
+            }
         }
 
-        nextButton.addEventListener("click", function() {
-            if (nextButton.textContent === "Show Answer") {
-                showAnswer();
-            } else {
-                currentQuestionIndex++;
-                showQuestion(currentQuestionIndex);
-            }
-        });
+        // Event listeners
+        submitKeyButton.addEventListener("click", validateKey);
+        nextButton.addEventListener("click", showNextQuestion);
 
         // Start the game
-        showQuestion(currentQuestionIndex);
+        questionElement.textContent = questions[currentQuestionIndex].question;
     </script>
 
 </body>
