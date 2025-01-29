@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>👶 Reveal Riddle Game 👶</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url('program.png'); /* Replace with your PNG image path */
+            background-size: cover;
+            background-position: center;
+            color: #5C3D28; /* Darker brown text */
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(250, 235, 215, 0.8); /* Soft nude color with transparency */
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2em;
+            color: #D77F50; /* Accent color */
+        }
+
+        .question {
+            font-size: 1.5em;
+            margin-top: 20px;
+        }
+
+        .answer {
+            font-size: 1.2em;
+            margin-top: 10px;
+            color: #8B4513;
+            font-weight: bold;
+        }
+
+        .button {
+            background-color: #D77F50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 1em;
+            margin-top: 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .button:hover {
+            background-color: #C56B40;
+        }
+
+        .reveal {
+            display: none;
+            margin-top: 30px;
+            font-size: 2em;
+            color: #D77F50;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Gender Reveal Quiz</h1>
+        <div class="question" id="question"></div>
+        <div class="answer" id="answer"></div>
+        <button class="button" id="nextButton">Next Question</button>
+        <div class="reveal" id="reveal">It's a...</div>
+    </div>
+
+    <audio id="revealSound" src="reveal_sound.mp3" preload="auto"></audio>
+
+    <script>
+        const questions = [
+            {question: "I’m changed often but never complain, I keep things clean, though I take the strain. What am I?", answer: "A diaper"},
+            {question: "I hold a meal but I’m not a plate, You tip me over, but I never break. What am I?", answer: "A baby bottle"},
+            {question: "I have a handle but I’m not a door, I keep someone safe while parents explore. What am I?", answer: "A baby carrier"},
+            {question: "I fill with air but I’m not a balloon, Without me, mealtime ends too soon. What am I?", answer: "A burp"},
+            {question: "I start small but can grow quite loud, When I begin, I gather a crowd. What am I?", answer: "A baby’s cry"},
+            {question: "I soothe tears, but I’m not a hug, I’m often lost under a rug. What am I?", answer: "A pacifier"},
+            {question: "I am tiny, but I can make quite a mess, Soft or firm, you’ll never guess! What am I?", answer: "Baby poo"}
+        ];
+
+        let currentQuestionIndex = 0;
+
+        const questionElement = document.getElementById("question");
+        const answerElement = document.getElementById("answer");
+        const nextButton = document.getElementById("nextButton");
+        const revealElement = document.getElementById("reveal");
+        const revealSound = document.getElementById("revealSound");
+
+        function showQuestion(index) {
+            if (index < questions.length) {
+                questionElement.textContent = questions[index].question;
+                answerElement.textContent = '';
+                nextButton.textContent = "Show Answer";
+            } else {
+                revealElement.style.display = 'block';
+                revealSound.play();
+                nextButton.style.display = 'none';
+                setTimeout(() => {
+                    revealElement.textContent = "It's a Boy!";
+                }, 3000); // Change to "It's a Girl!" for a girl reveal
+            }
+        }
+
+        function showAnswer() {
+            answerElement.textContent = questions[currentQuestionIndex].answer;
+            nextButton.textContent = "Next Question";
+        }
+
+        nextButton.addEventListener("click", function() {
+            if (nextButton.textContent === "Show Answer") {
+                showAnswer();
+            } else {
+                currentQuestionIndex++;
+                showQuestion(currentQuestionIndex);
+            }
+        });
+
+        // Start the game
+        showQuestion(currentQuestionIndex);
+    </script>
+
+</body>
+</html>
