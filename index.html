@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>👶 Reveal Riddle Game 👶</title>
+    <title>👶 R's Gender Reveal Game 👶</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-image: url('program.png'); /* Replace with your PNG image path */
+            background-image: url('background.png'); /* Replace with your PNG image path */
             background-size: cover;
             background-position: center;
             color: #5C3D28; /* Darker brown text */
@@ -109,7 +109,7 @@
 <body>
 
     <div class="container">
-        <h1>👶 Reveal Riddle Game 👶</h1>
+        <h1>👶 R's Gender Reveal Game 👶</h1>
         <div class="question" id="question"></div>
         <div class="answer" id="answer"></div>
         <input type="text" class="key-input" id="keyInput" placeholder="Enter the secret key">
@@ -132,7 +132,7 @@
             {question: "I start small but can grow quite loud, When I begin, I gather a crowd. What am I?", answer: "A baby’s cry"},
             {question: "I soothe tears, but I’m not a hug, I’m often lost under a rug. What am I?", answer: "A pacifier"},
             {question: "I am tiny, but I can make quite a mess, Soft or firm, you’ll never guess! What am I?", answer: "Baby poo"},
-            {question: "The Big Reveal!", answer: "It's a Boy!"} // Change to "It's a Girl!" for a girl reveal
+            {question: "The Big Reveal!", answer: "Is it a Boy or a Girl?"} // Change to "It's a Girl!" for a girl reveal
         ];
 
         let currentQuestionIndex = 0;
@@ -164,8 +164,6 @@
                     revealElement.style.display = 'block';
                     revealElement.textContent = questions[currentQuestionIndex].answer;
                     finalRevealElement.innerHTML = `
-                        <p>You’ve solved the clues, so here’s your last test!</p>
-                        <p>Find the surprise where baby will rest!</p>
                         <p>Approximate dimensions:</p>
                         <p>34cm(L) x 55cm(W) x 89cm(H)</p>
                         <p>Colours:</p>
