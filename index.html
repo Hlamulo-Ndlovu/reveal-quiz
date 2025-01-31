@@ -17,36 +17,38 @@
         }
 
         .container {
-            max-width: 600px;
+            max-width: 90%; /* Adjusted for mobile */
             margin: 0 auto;
-            padding: 20px;
+            padding: 10px; /* Reduced padding for mobile */
             background-color: #FAEBD7;
             border-radius: 10px;
             box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
-            font-size: 2em;
+            font-size: 1.8em; /* Adjusted for mobile */
             color: #D77F50;
             font-family: 'Comic Sans MS', cursive;
+            margin: 10px 0; /* Added margin for spacing */
         }
 
         .question {
-            font-size: 1.1em;
-            margin-top: 20px;
+            font-size: 1em; /* Adjusted for mobile */
+            margin-top: 15px; /* Adjusted for mobile */
             font-family: Arial, sans-serif;
         }
 
         .question-number {
-            font-size: 1.3em;
+            font-size: 1.1em; /* Adjusted for mobile */
             color: #D2A679;
             font-weight: bold;
             font-family: 'Comic Sans MS', cursive;
             display: block;
+            margin-bottom: 10px; /* Added margin for spacing */
         }
 
         .answer {
-            font-size: 1.1em;
+            font-size: 1em; /* Adjusted for mobile */
             margin-top: 10px;
             color: #8B4513;
             font-weight: bold;
@@ -58,13 +60,14 @@
             background-color: #D77F50;
             border: none;
             color: white;
-            padding: 10px 20px;
+            padding: 10px 15px; /* Adjusted padding for mobile */
             text-align: center;
-            font-size: 1em;
-            margin-top: 20px;
+            font-size: 0.9em; /* Adjusted for mobile */
+            margin-top: 15px; /* Adjusted for mobile */
             cursor: pointer;
             border-radius: 5px;
             font-family: Arial, sans-serif;
+            width: 100%; /* Full width on mobile */
         }
 
         .button:hover {
@@ -78,16 +81,16 @@
 
         .reveal {
             display: none;
-            margin-top: 30px;
-            font-size: 1.5em;
+            margin-top: 20px; /* Adjusted for mobile */
+            font-size: 1.3em; /* Adjusted for mobile */
             color: #D77F50;
             font-family: Arial, sans-serif;
         }
 
         .balloon {
             position: absolute;
-            width: 50px;
-            height: 70px;
+            width: 40px; /* Adjusted for mobile */
+            height: 60px; /* Adjusted for mobile */
             background-color: #ff69b4;
             border-radius: 50%;
             animation: float 5s ease-in-out infinite;
@@ -99,13 +102,14 @@
         }
 
         .key-input {
-            margin-top: 20px;
+            margin-top: 15px; /* Adjusted for mobile */
             padding: 10px;
-            font-size: 1em;
+            font-size: 0.9em; /* Adjusted for mobile */
             border: 2px solid #D77F50;
             border-radius: 5px;
             font-family: Arial, sans-serif;
-            width: 150px; /* Fixed width for the input box */
+            width: 100%; /* Full width on mobile */
+            box-sizing: border-box; /* Ensure padding doesn't increase width */
         }
 
         .error-message {
@@ -113,20 +117,77 @@
             margin-top: 10px;
             display: none;
             font-family: Arial, sans-serif;
+            font-size: 0.9em; /* Adjusted for mobile */
         }
 
         .final-reveal {
-            font-size: 1.2em;
-            margin-top: 20px;
+            font-size: 1em; /* Adjusted for mobile */
+            margin-top: 15px; /* Adjusted for mobile */
             color: #5C3D28;
             font-family: Arial, sans-serif;
         }
 
         .button-container {
             display: flex;
-            justify-content: center;
+            flex-direction: column; /* Stack buttons vertically on mobile */
             gap: 10px; /* Space between buttons and input */
-            margin-top: 20px;
+            margin-top: 15px; /* Adjusted for mobile */
+        }
+
+        @media (min-width: 600px) {
+            /* Desktop styles */
+            .container {
+                max-width: 600px;
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .question {
+                font-size: 1.1em;
+            }
+
+            .question-number {
+                font-size: 1.3em;
+            }
+
+            .answer {
+                font-size: 1.1em;
+            }
+
+            .button {
+                padding: 10px 20px;
+                font-size: 1em;
+                width: auto; /* Auto width on desktop */
+            }
+
+            .reveal {
+                font-size: 1.5em;
+            }
+
+            .balloon {
+                width: 50px;
+                height: 70px;
+            }
+
+            .key-input {
+                font-size: 1em;
+                width: 150px; /* Fixed width for desktop */
+            }
+
+            .error-message {
+                font-size: 1em;
+            }
+
+            .final-reveal {
+                font-size: 1.2em;
+            }
+
+            .button-container {
+                flex-direction: row; /* Horizontal layout on desktop */
+            }
         }
     </style>
 </head>
@@ -149,7 +210,7 @@
 
     <script>
         const questions = [
-            {question: "I have four wheels, but I’m not a car. I help parents push the baby around, but I don’t go far. What am I?", answer: "A stroller"},
+            {question: "I have four wheels, but I’m not a car. I help parents push, but I don’t go far. What am I?", answer: "A stroller"},
             {question: "I'm changed often, but I never complain. I keep things clean, though I take the strain. What am I?", answer: "A diaper"},
             {question: "I hold a meal, but I'm not a plate. You tip me over, but I never break. What am I?", answer: "A baby bottle"},
             {question: "I have a handle, but I'm not a door. I keep the baby safe while parents explore. What am I?", answer: "A baby carrier"},
