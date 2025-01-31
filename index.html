@@ -6,11 +6,11 @@
     <title>👶 R's Gender Reveal 👶</title>
     <style>
         body {
-            font-family: Arial, sans-serif; /* Changed back to Arial, sans-serif */
+            font-family: Arial, sans-serif;
             background-image: url('r_background5.png'); /* Replace with your PNG image path */
-            background-size: cover; /* Ensures the background image covers the entire screen */
+            background-size: cover;
             background-position: center;
-            color: #5C3D28; /* Darker brown text */
+            color: #5C3D28;
             text-align: center;
             margin: 0;
             padding: 0;
@@ -20,29 +20,29 @@
             max-width: 600px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #FAEBD7; /* Lighter nude color */
+            background-color: #FAEBD7;
             border-radius: 10px;
             box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
             font-size: 2em;
-            color: #D77F50; /* Accent color */
-            font-family: 'Comic Sans MS', cursive; /* Kept Comic Sans MS with cursive for the title */
+            color: #D77F50;
+            font-family: 'Comic Sans MS', cursive;
         }
 
         .question {
-            font-size: 1.1em; /* Reduced font size */
+            font-size: 1.1em;
             margin-top: 20px;
-            font-family: Arial, sans-serif; /* Changed back to Arial, sans-serif */
+            font-family: Arial, sans-serif;
         }
 
         .question-number {
-            font-size: 1.3em; /* Reduced font size */
-            color: #D2A679; /* Darker nude color */
-            font-weight: bold; /* Added to make the question number bold */
-            font-family: 'Comic Sans MS', cursive; /* Changed to Comic Sans MS for a cursive font */
-            display: block; /* Ensures the question number is on a separate line */
+            font-size: 1.3em;
+            color: #D2A679;
+            font-weight: bold;
+            font-family: 'Comic Sans MS', cursive;
+            display: block;
         }
 
         .answer {
@@ -50,8 +50,8 @@
             margin-top: 10px;
             color: #8B4513;
             font-weight: bold;
-            display: none; /* Hidden by default */
-            font-family: Arial, sans-serif; /* Changed back to Arial, sans-serif */
+            display: none;
+            font-family: Arial, sans-serif;
         }
 
         .button {
@@ -64,7 +64,7 @@
             margin-top: 20px;
             cursor: pointer;
             border-radius: 5px;
-            font-family: Arial, sans-serif; /* Changed back to Arial, sans-serif */
+            font-family: Arial, sans-serif;
         }
 
         .button:hover {
@@ -81,14 +81,14 @@
             margin-top: 30px;
             font-size: 1.5em;
             color: #D77F50;
-            font-family: Arial, sans-serif; /* Changed back to Arial, sans-serif */
+            font-family: Arial, sans-serif;
         }
 
         .balloon {
             position: absolute;
             width: 50px;
             height: 70px;
-            background-color: #ff69b4; /* Pink for girl, or use #87ceeb for blue */
+            background-color: #ff69b4;
             border-radius: 50%;
             animation: float 5s ease-in-out infinite;
         }
@@ -104,21 +104,29 @@
             font-size: 1em;
             border: 2px solid #D77F50;
             border-radius: 5px;
-            font-family: Arial, sans-serif; /* Changed back to Arial, sans-serif */
+            font-family: Arial, sans-serif;
+            width: 150px; /* Fixed width for the input box */
         }
 
         .error-message {
             color: red;
             margin-top: 10px;
             display: none;
-            font-family: Arial, sans-serif; /* Changed back to Arial, sans-serif */
+            font-family: Arial, sans-serif;
         }
 
         .final-reveal {
             font-size: 1.2em;
             margin-top: 20px;
             color: #5C3D28;
-            font-family: Arial, sans-serif; /* Changed back to Arial, sans-serif */
+            font-family: Arial, sans-serif;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px; /* Space between buttons and input */
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -128,18 +136,20 @@
         <h1>👶 R's Gender Reveal 👶</h1>
         <div class="question" id="question"></div>
         <div class="answer" id="answer"></div>
-        <input type="text" class="key-input" id="keyInput" placeholder="Enter the secret key">
-        <button class="button" id="submitKeyButton">Submit Key</button>
+        <div class="button-container">
+            <button class="button" id="prevButton" style="display: none;">Previous Question</button>
+            <input type="text" class="key-input" id="keyInput" placeholder="Enter the secret key">
+            <button class="button" id="submitKeyButton">Submit Key</button>
+            <button class="button" id="nextButton" disabled>Next Question</button>
+        </div>
         <div class="error-message" id="errorMessage">Incorrect key! Try again.</div>
-        <button class="button" id="nextButton" disabled>Next Question</button>
-        <button class="button" id="prevButton" disabled>Previous Question</button>
         <div class="reveal" id="reveal">It's a...</div>
         <div class="final-reveal" id="finalReveal"></div>
     </div>
 
     <script>
         const questions = [
-            {question: "I have four wheels, but I’m not a car. I help parents push, but I don’t go far. What am I?", answer: "A stroller"},
+            {question: "I have four wheels, but I’m not a car. I help parents push the baby around, but I don’t go far. What am I?", answer: "A stroller"},
             {question: "I'm changed often, but I never complain. I keep things clean, though I take the strain. What am I?", answer: "A diaper"},
             {question: "I hold a meal, but I'm not a plate. You tip me over, but I never break. What am I?", answer: "A baby bottle"},
             {question: "I have a handle, but I'm not a door. I keep the baby safe while parents explore. What am I?", answer: "A baby carrier"},
@@ -152,6 +162,7 @@
         ];
 
         let currentQuestionIndex = 0;
+        const revealedAnswers = new Set(); // Track which questions have been revealed
 
         const questionElement = document.getElementById("question");
         const answerElement = document.getElementById("answer");
@@ -184,16 +195,19 @@
                             <p>The REVEAL is between ITEMS in Q1 and Q9</p>
                         `;
                         createBalloons();
-                        nextButton.style.display = 'none';
-                        prevButton.style.display = 'none';
-                        submitKeyButton.style.display = 'none';
+                        nextButton.style.display = 'none'; // Hide Next Button on the last question
+                        prevButton.style.display = 'inline-block'; // Show Previous Button on the last question
+                        submitKeyButton.style.display = 'none'; // Hide the Submit Key button
                         keyInput.style.display = 'none';
                     }, 1000); // Wait for the reveal sound to finish before showing the answer
                 } else {
                     answerElement.textContent = `Answer: ${questions[currentQuestionIndex].answer}`;
                     answerElement.style.display = 'block';
                     nextButton.disabled = false; // Enable the "Next Question" button
-                    prevButton.disabled = false; // Enable the "Previous Question" button
+                    prevButton.style.display = currentQuestionIndex > 0 ? 'inline-block' : 'none'; // Show Previous Button only if not on Question 1
+                    submitKeyButton.style.display = 'none'; // Hide the Submit Key button
+                    keyInput.style.display = 'none'; // Hide the Submit Key input box
+                    revealedAnswers.add(currentQuestionIndex); // Mark this question as revealed
                 }
                 errorMessage.style.display = 'none';
             } else {
@@ -205,17 +219,27 @@
         function showNextQuestion() {
             currentQuestionIndex++;
             if (currentQuestionIndex < questions.length) {
-                questionElement.innerHTML = `<span class="question-number">Question ${currentQuestionIndex + 1}:</span><br>${questions[currentQuestionIndex].question}`; // Number the question and ensure it's on a separate line
+                questionElement.innerHTML = `<span class="question-number">Question ${currentQuestionIndex + 1}:</span><br>${questions[currentQuestionIndex].question}`;
                 answerElement.textContent = '';
                 answerElement.style.display = 'none';
                 keyInput.value = '';
                 errorMessage.style.display = 'none';
-                nextButton.disabled = true; // Disable the "Next Question" button
-                prevButton.disabled = false; // Enable the "Previous Question" button
+                nextButton.disabled = false; // Always enable the "Next Question" button
+                prevButton.style.display = 'inline-block'; // Show Previous Button
+                if (revealedAnswers.has(currentQuestionIndex)) {
+                    // If the answer has already been revealed, show it immediately
+                    answerElement.textContent = `Answer: ${questions[currentQuestionIndex].answer}`;
+                    answerElement.style.display = 'block';
+                    submitKeyButton.style.display = 'none'; // Hide the Submit Key button
+                    keyInput.style.display = 'none'; // Hide the Submit Key input box
+                } else {
+                    submitKeyButton.style.display = 'inline-block'; // Show the Submit Key button
+                    keyInput.style.display = 'inline-block'; // Show the Submit Key input box
+                }
             } else {
                 // End of game
                 nextButton.style.display = 'none';
-                prevButton.style.display = 'none';
+                prevButton.style.display = 'inline-block'; // Show Previous Button on the last question
             }
         }
 
@@ -223,13 +247,16 @@
         function showPrevQuestion() {
             currentQuestionIndex--;
             if (currentQuestionIndex >= 0) {
-                questionElement.innerHTML = `<span class="question-number">Question ${currentQuestionIndex + 1}:</span><br>${questions[currentQuestionIndex].question}`; // Number the question and ensure it's on a separate line
-                answerElement.textContent = '';
-                answerElement.style.display = 'none';
+                questionElement.innerHTML = `<span class="question-number">Question ${currentQuestionIndex + 1}:</span><br>${questions[currentQuestionIndex].question}`;
+                answerElement.textContent = `Answer: ${questions[currentQuestionIndex].answer}`; // Show answer directly
+                answerElement.style.display = 'block';
                 keyInput.value = '';
                 errorMessage.style.display = 'none';
-                prevButton.disabled = true; // Disable the "Previous Question" button
-                nextButton.disabled = false; // Enable the "Next Question" button
+                nextButton.disabled = false; // Always enable the "Next Question" button
+                nextButton.style.display = 'inline-block'; // Show Next Button
+                prevButton.style.display = currentQuestionIndex > 0 ? 'inline-block' : 'none'; // Hide Previous Button on Question 1
+                submitKeyButton.style.display = 'none'; // Hide the Submit Key button
+                keyInput.style.display = 'none'; // Hide the Submit Key input box
             } else {
                 // Beginning of game
                 prevButton.style.display = 'none';
@@ -255,7 +282,7 @@
         prevButton.addEventListener("click", showPrevQuestion);
 
         // Start the game
-        questionElement.innerHTML = `<span class="question-number">Question 1:</span><br>${questions[currentQuestionIndex].question}`; // Number the first question and ensure it's on a separate line
+        questionElement.innerHTML = `<span class="question-number">Question 1:</span><br>${questions[currentQuestionIndex].question}`;
     </script>
 
 </body>
